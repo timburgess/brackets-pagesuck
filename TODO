@@ -1,7 +1,8 @@
 TODO
 ====
 
-- Use regex to strip out valid <title> contents
+- Avoid current requirement to have http:// in the url
+- Use more sophisticated regex to strip out valid <title> contents
 - Deal with 404s and other status errors with supplied URL
 - Cater for password protected pages
 - Save file after creation
