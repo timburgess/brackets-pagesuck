@@ -122,20 +122,9 @@ define(function (require, exports, module) {
         deferred.done(createWithSuggestedName);
         deferred.fail(function createWithDefault() { createWithSuggestedName("untitled.html"); });
 
-
-        //        return deferred;
-
     }
     
-    
-    function getPage(getUrl, callback) {
-        $.ajax({
-            url: getUrl,
-            dataType: 'html',
-            success: callback
-        });
-    }
-        
+            
     
     function showUrlDialog() {
         console.log('enter URL');
@@ -146,16 +135,9 @@ define(function (require, exports, module) {
             dialogPromise;
 
         $dlg = $(mainDialog);
-        dialogPromise = Dialogs.showModalDialogUsingTemplate($dlg);
-
-        dialogPromise.done(function (id) {
-                if (id === Dialogs.DIALOG_BTN_OK) {
-                    var getUrl = $getUrlControl.val();
-                    console.log("Sucking " + getUrl);
-                    getPage(getUrl, loadPage);
-                    //TODO - some URL validation
-                }
-            });
+        Dialogs.showModalDialogUsingTemplate($dlg);
+        // we implement our own OK button handler so we have
+        // no interest in the returned promise
         
         // URL input
         $getUrlControl = $dlg.find(".get-url");
@@ -165,17 +147,23 @@ define(function (require, exports, module) {
             $(this).html('Loading...');
             var getUrl = $getUrlControl.val();
             console.log("Sucking " + getUrl);
-            getPage(getUrl, loadPage);
-
-//    put in load callback            
-//              $dlg.modal(true).hide();
-//            $dlg.remove();
+            $.ajax({
+                url: getUrl,
+                dataType: 'html',
+                success: function (html) {
+                    // dismiss modal            
+                    $dlg.modal(true).hide();
+                    $dlg.remove();
+                    // load the page
+                    loadPage(html);
+                }
+            });
         });
-
-        // Error message
-//        if (errorMessage) {
-//            $dlg.find(".settings-list").append("<div class='alert-message' style='margin-bottom: 0'>" + errorMessage + "</div>");
-//        }
+            
+        // Error message - TODO
+        //        if (errorMessage) {
+        //            $dlg.find(".settings-list").append("<div class='alert-message' style='margin-bottom: 0'>" + errorMessage + "</div>");
+        //        }
 
         // Give focus to first control
         $getUrlControl.focus();
