@@ -44,7 +44,8 @@ define(function (require, exports, module) {
         var start = html.indexOf("<title>");
         if (start === -1) { return "untitled"; }
         var end = start += 7;
-        while (html[end] !== '|' && html[end] !== '<') { end++; }
+        var valid = /[A-Za-z0-9 _\-]/;
+        while (valid.test(html[end])) { end++; }
         return html.substring(start, end).trim();
     }
     
@@ -127,7 +128,6 @@ define(function (require, exports, module) {
             
     
     function showUrlDialog() {
-        console.log('enter URL');
 
         var $dlg,
             $title,
