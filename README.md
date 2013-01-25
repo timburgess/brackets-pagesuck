@@ -18,7 +18,7 @@ that folder. Then restart Brackets.
 Alternatively, if you are using Brackets from the source code, create a ```PageSuck``` folder
 inside the ```brackets/src/extensions/user``` folder, and reload Brackets.
 
-**Compatible with Brackets Sprint 18**
+**Compatible with Brackets Sprint 18 or later**
 
 Licence
 =======
