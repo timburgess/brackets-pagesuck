@@ -8,6 +8,8 @@ like to tweak and experiment with using Brackets? With PageSuck installed, simpl
 type in the full URL and PageSuck will suck the contents of that page directly into a
 new editor file for you.
 
+Raymond Camden blogged (and did a demo screencast) about PageSuck on the [Adobe Brackets blog](http://blog.brackets.io/2013/02/11/pagesuck-brackets-extension/#more-402).
+
 To install
 ==========
 
