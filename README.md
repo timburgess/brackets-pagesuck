@@ -28,9 +28,9 @@ PageSuck is licenced under the [MIT licence](http://en.wikipedia.org/wiki/MIT_li
 
 History
 =======
-2013-08-01: Resolved 'Grey Screen of Death' caused by underlying Bootstrap changes in Brackets
-            Dialog buttons now in user's language
-            Now uses Alt-S to avoid conflict with newer Brackets commands
+2013-08-01: Resolved 'Grey Screen of Death' caused by underlying Bootstrap changes in Brackets.
+            Dialog buttons now in user's language.
+            Now uses Alt-S to avoid conflict with newer Brackets commands.
 
 2012-12-28: Initial release
 
