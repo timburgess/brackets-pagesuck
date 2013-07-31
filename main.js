@@ -1,4 +1,4 @@
-/*
+/*  
  * Copyright (c) 2012 Tim Burgess. All rights reserved.
  *  
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -26,7 +26,7 @@
 
 define(function (require, exports, module) {
     "use strict";
-    var COMMAND_ID = "getpage.getpage";
+    var COMMAND_ID = "timburgess.pagesuck.getpage";
     
     // Brackets modules
     var EditorManager       = brackets.getModule("editor/EditorManager"),
@@ -36,9 +36,10 @@ define(function (require, exports, module) {
         CommandManager      = brackets.getModule("command/CommandManager"),
         KeyBindingManager   = brackets.getModule("command/KeyBindingManager"),
         Dialogs             = brackets.getModule("widgets/Dialogs"),
-        Strings                = brackets.getModule("strings");
+        Strings             = brackets.getModule("strings");
+    
     // local modules
-    var mainDialog       = require("text!dialog.html");
+    var mainDialog       = require("text!dialog-template.html");
     
     function getTitle(html) {
         var start = html.indexOf("<title>");
@@ -122,56 +123,50 @@ define(function (require, exports, module) {
         
         deferred.done(createWithSuggestedName);
         deferred.fail(function createWithDefault() { createWithSuggestedName("untitled.html"); });
-
     }
     
             
-    
+    /**
+     * Callback registered with CommandManager
+     */
     function showUrlDialog() {
 
-        var $dlg,
-            $title,
-            $getUrlControl,
-            dialogPromise;
+        var dialog,
+            $baseUrlControl;
 
-        $dlg = $(mainDialog);
-        Dialogs.showModalDialogUsingTemplate($dlg);
-        // we implement our own OK button handler so we have
-        // no interest in the returned promise
+        var templateVars = {
+            title: "Enter a URL to get:",
+            label: "URL:",
+            baseURL: "http://localhost",
+            Strings: Strings
+        };
         
-        // URL input
-        $getUrlControl = $dlg.find(".get-url");
-        
-        // add OK button handler
-        $dlg.one("click", ".dialog-button-ext", function (e) {
-            $(this).html('Loading...');
-            var getUrl = $getUrlControl.val();
-            console.log("Sucking " + getUrl);
-            $.ajax({
-                url: getUrl,
-                dataType: 'html',
-                success: function (html) {
-                    // dismiss modal            
-                    $dlg.modal(true).hide();
-                    $dlg.remove();
-                    // load the page
-                    loadPage(html);
-                }
-            });
+        dialog = Dialogs.showModalDialogUsingTemplate(Mustache.render(mainDialog, templateVars));
+        dialog.done(function (id) {
+            if (id === Dialogs.DIALOG_BTN_OK) {
+                // get URL input
+                var baseUrlValue = $baseUrlControl.val();
+                console.log("Sucking " + baseUrlValue);
+                $.ajax({
+                    url: baseUrlValue,
+                    dataType: 'html',
+                    success: function (html) {
+                        // load the page
+                        loadPage(html);
+                    }
+                });
+            }
         });
-            
-        // Error message - TODO
-        //        if (errorMessage) {
-        //            $dlg.find(".settings-list").append("<div class='alert-message' style='margin-bottom: 0'>" + errorMessage + "</div>");
-        //        }
+        
+        // give focus to url text
+        $baseUrlControl = dialog.getElement().find(".url");
+        $baseUrlControl.focus();
 
-        // Give focus to first control
-        $getUrlControl.focus();
-
-        return dialogPromise;
+        return dialog;
     }
     
     
-    CommandManager.register("Edit File", COMMAND_ID, showUrlDialog);
-    KeyBindingManager.addBinding(COMMAND_ID, "Alt-G");
+    CommandManager.register("PageSuck", COMMAND_ID, showUrlDialog);
+    KeyBindingManager.addBinding(COMMAND_ID, "Alt-S", "mac");
+    KeyBindingManager.addBinding(COMMAND_ID, "Alt-S", "win");
 });
