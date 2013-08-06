@@ -39,3 +39,7 @@ History
 2012-12-28: Initial release
 
 See TODO for slated improvements
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/timburgess/brackets-pagesuck/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
