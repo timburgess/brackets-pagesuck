@@ -1,12 +1,13 @@
-<div class="getpage-dialog modal">
+<div class="project-settings-dialog modal">
     <div class="modal-header">
         <h1 class="dialog-title">{{title}}</h1>
     </div>
     <div class="modal-body">
         <div class="field-container">
             <label>
-                {{label}} <input type="text" value="http://localhost" class="url"/>
+                URL: <input type="text" value="{{baseUrl}}" class="url" />
             </label>
+            {{#errorMessage}}<div class="alert" style="margin-bottom: 0">{{{errorMessage}}}</div>{{/errorMessage}}
          </div>
     </div>
     <div class="modal-footer">

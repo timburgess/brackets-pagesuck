@@ -1,8 +1,8 @@
 TODO
 ====
 
-- Avoid current requirement to have http:// in the url
+- Have dialog change message to 'loading' while fetch occuring 
 - Use more sophisticated regex to strip out valid <title> contents
 - Deal with 404s and other status errors with supplied URL
 - Cater for password protected pages
-- Save file after creation
+- Use an untitled page?

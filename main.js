@@ -89,7 +89,6 @@ define(function (require, exports, module) {
      * With html retrieved, creates a new file
      */
     function loadPage(html) {
-        console.log('html retrieved');
         
         // Determine the directory to put the new file
         // If a file is currently selected, put it next to it.
@@ -135,9 +134,9 @@ define(function (require, exports, module) {
             $baseUrlControl;
 
         var templateVars = {
-            title: "Enter a URL to get:",
+            title: "Enter a URL to get",
             label: "URL:",
-            baseURL: "http://localhost",
+            baseUrl: "http://",
             Strings: Strings
         };
         
@@ -159,7 +158,7 @@ define(function (require, exports, module) {
         });
         
         // give focus to url text
-        $baseUrlControl = dialog.getElement().find(".url");
+        $baseUrlControl = dialog.getElement().find(":input");
         $baseUrlControl.focus();
 
         return dialog;
