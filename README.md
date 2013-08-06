@@ -30,8 +30,8 @@ History
 =======
 2013-08-06: Improved dialog layout. Resolved odd character appearing in Mac dialog input field
 
-2013-08-01: Resolved 'Grey Screen of Death' caused by underlying Bootstrap changes in Brackets
-            Dialog buttons now in user's language
+2013-08-01: Resolved 'Grey Screen of Death' caused by underlying Bootstrap changes in Brackets.
+            Dialog buttons now in user's language.
             Now uses Alt-S to avoid conflict with newer Brackets commands
 
 2012-12-28: Initial release
