@@ -29,10 +29,7 @@ define(function (require, exports, module) {
     var COMMAND_ID = "timburgess.pagesuck.getpage";
     
     // Brackets modules
-    var EditorManager       = brackets.getModule("editor/EditorManager"),
-        ProjectManager      = brackets.getModule("project/ProjectManager"),
-        DocumentManager     = brackets.getModule("document/DocumentManager"),
-        NativeFileSystem    = brackets.getModule("file/NativeFileSystem").NativeFileSystem,
+    var DocumentManager     = brackets.getModule("document/DocumentManager"),
         CommandManager      = brackets.getModule("command/CommandManager"),
         KeyBindingManager   = brackets.getModule("command/KeyBindingManager"),
         Dialogs             = brackets.getModule("widgets/Dialogs"),
@@ -86,51 +83,22 @@ define(function (require, exports, module) {
     }
     
     /**
-     * With html retrieved, creates a new file
+     * With html retrieved, creates a new untitled document and
+     * put the html into it
      */
     function loadPage(html) {
         
-        // Determine the directory to put the new file
-        // If a file is currently selected, put it next to it.
-        // If a directory is currently selected, put it in it.
-        // If nothing is selected, put it at the root of the project
-        var baseDir,
-            pm,
-            selected = ProjectManager.getSelectedItem() || ProjectManager.getProjectRoot();
-        
-        baseDir = selected.fullPath;
-        if (selected.isFile) {
-            baseDir = baseDir.substr(0, baseDir.lastIndexOf("/"));
-        }
-    
-        var deferred = getFilenameSuggestion(html, baseDir);
-        var createWithSuggestedName = function (suggestedName) {
-            // we have a working filename so skip rename on create
-            var entryDeferred = ProjectManager.createNewItem(baseDir, suggestedName, true, false);
-//                .pipe(deferred.resolve, deferred.reject, deferred.notify)
-            entryDeferred.done(function (entry) {
-                // insert html into file, this will overwrite whatever content happens to be there already
-                var docDeferred = DocumentManager.getDocumentForPath(entry.fullPath);
-                docDeferred.done(function (doc) {
-                    DocumentManager.setCurrentDocument(doc);
-                    doc._masterEditor._codeMirror.setValue(html);
-
-                });
-            });
-
-        };
-        
-        deferred.done(createWithSuggestedName);
-        deferred.fail(function createWithDefault() { createWithSuggestedName("untitled.html"); });
+        var counter = 1;
+        var doc = DocumentManager.createUntitledDocument(counter, ".html");
+        DocumentManager.setCurrentDocument(doc);
+        doc.setText(html);
     }
     
             
     /**
-     * Callback registered with CommandManager
+     * Show dialog for URL to suck
      */
     function showUrlDialog() {
-
-        var $urlInput;
 
         var templateVars = {
             title: "Enter a URL to get",
@@ -143,7 +111,7 @@ define(function (require, exports, module) {
         
         // add handlers and focus to input
         var $dlg = $(".pagesuck-dialog.instance");
-        $urlInput = $dlg.find("input.url");
+        var $urlInput = $dlg.find("input.url");
         $urlInput.focus();
         $dlg.find(".dialog-button[data-button-id='cancel']").on("click", function() {
             Dialogs.cancelModalDialogIfOpen("pagesuck-dialog");
@@ -151,14 +119,14 @@ define(function (require, exports, module) {
 
         $dlg.find(".dialog-button[data-button-id='ok']").on("click", function() {
             
-            // get URL input
+            // get input URL and retrieve content
             var baseUrlValue = $urlInput.val();
             console.log("Sucking " + baseUrlValue);
             $.ajax({
                 url: baseUrlValue,
                 dataType: 'html',
                 success: function (html) {
-                    // load the page
+                    // load the page then close the dialog
                     loadPage(html);
                     Dialogs.cancelModalDialogIfOpen("pagesuck-dialog");
                 }
@@ -168,7 +136,7 @@ define(function (require, exports, module) {
         });
     }
     
-    
+    // wegister with the wabbit
     CommandManager.register("PageSuck", COMMAND_ID, showUrlDialog);
     KeyBindingManager.addBinding(COMMAND_ID, "Alt-S", "mac");
     KeyBindingManager.addBinding(COMMAND_ID, "Alt-S", "win");
