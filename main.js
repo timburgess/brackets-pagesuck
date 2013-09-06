@@ -30,6 +30,7 @@ define(function (require, exports, module) {
     
     // Brackets modules
     var DocumentManager     = brackets.getModule("document/DocumentManager"),
+        ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
         CommandManager      = brackets.getModule("command/CommandManager"),
         KeyBindingManager   = brackets.getModule("command/KeyBindingManager"),
         Dialogs             = brackets.getModule("widgets/Dialogs"),
@@ -37,6 +38,7 @@ define(function (require, exports, module) {
     
     // local modules
     var mainDialog       = require("text!htmlContent/dialog-template.html");
+    var toolbar          = require("text!htmlContent/pagesuck-toolbar.html");
     
     function getTitle(html) {
         var start = html.indexOf("<title>");
@@ -135,6 +137,15 @@ define(function (require, exports, module) {
             $(this).html($(this)[0].attributes['data-loading-text'].nodeValue)
         });
     }
+    
+    // load stylesheet
+    ExtensionUtils.loadStyleSheet(module, "styles/styles.css");
+    
+    // add icon to toolbar and listen
+    $("#main-toolbar .buttons").append(toolbar);
+    $("#toolbar-pagesuck").on('click', function() {
+        showUrlDialog();
+    });
     
     // wegister with the wabbit
     CommandManager.register("PageSuck", COMMAND_ID, showUrlDialog);

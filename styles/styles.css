@@ -1,0 +1,10 @@
+#toolbar-pagesuck {
+    display:inline-block;
+    background-image:url('img/tongue.svg');
+    background-size:100%;
+    opacity:0.70;
+}
+
+#toolbar-pagesuck:hover{
+    opacity:1;
+}
