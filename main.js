@@ -1,5 +1,5 @@
 /*  
- * Copyright (c) 2012 Tim Burgess. All rights reserved.
+ * Copyright (c) 2012-2013 Tim Burgess. All rights reserved.
  *  
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"), 
@@ -21,8 +21,8 @@
  * 
  */
 
-/*jslint vars: true, plusplus: true, devel: true, nomen: true, regexp: true, indent: 4, maxerr: 50 */
-/*global define, brackets, $ */
+/*jslint vars: true, plusplus: true, devel: true, nomen: true, regexp: true, indent: 4, maxerr: 50, white: true, debug: true */
+/*global define, brackets, $, Mustache */
 
 define(function (require, exports, module) {
     "use strict";
@@ -39,7 +39,7 @@ define(function (require, exports, module) {
         Strings             = brackets.getModule("strings");
     
     // local modules
-    var mainDialog       = require("text!dialog-template.html");
+    var mainDialog       = require("text!htmlContent/dialog-template.html");
     
     function getTitle(html) {
         var start = html.indexOf("<title>");
@@ -130,8 +130,7 @@ define(function (require, exports, module) {
      */
     function showUrlDialog() {
 
-        var dialog,
-            $baseUrlControl;
+        var $urlInput;
 
         var templateVars = {
             title: "Enter a URL to get",
@@ -140,28 +139,33 @@ define(function (require, exports, module) {
             Strings: Strings
         };
         
-        dialog = Dialogs.showModalDialogUsingTemplate(Mustache.render(mainDialog, templateVars));
-        dialog.done(function (id) {
-            if (id === Dialogs.DIALOG_BTN_OK) {
-                // get URL input
-                var baseUrlValue = $baseUrlControl.val();
-                console.log("Sucking " + baseUrlValue);
-                $.ajax({
-                    url: baseUrlValue,
-                    dataType: 'html',
-                    success: function (html) {
-                        // load the page
-                        loadPage(html);
-                    }
-                });
-            }
-        });
+        Dialogs.showModalDialogUsingTemplate(Mustache.render(mainDialog, templateVars), false);
         
-        // give focus to url text
-        $baseUrlControl = dialog.getElement().find(":input");
-        $baseUrlControl.focus();
+        // add handlers and focus to input
+        var $dlg = $(".pagesuck-dialog.instance");
+        $urlInput = $dlg.find("input.url");
+        $urlInput.focus();
+        $dlg.find(".dialog-button[data-button-id='cancel']").on("click", function() {
+            Dialogs.cancelModalDialogIfOpen("pagesuck-dialog");
+        });
 
-        return dialog;
+        $dlg.find(".dialog-button[data-button-id='ok']").on("click", function() {
+            
+            // get URL input
+            var baseUrlValue = $urlInput.val();
+            console.log("Sucking " + baseUrlValue);
+            $.ajax({
+                url: baseUrlValue,
+                dataType: 'html',
+                success: function (html) {
+                    // load the page
+                    loadPage(html);
+                    Dialogs.cancelModalDialogIfOpen("pagesuck-dialog");
+                }
+            });
+            // change button text
+            $(this).html($(this)[0].attributes['data-loading-text'].nodeValue)
+        });
     }
     
     
