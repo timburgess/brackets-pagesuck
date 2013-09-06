@@ -1,4 +1,4 @@
-PageSuck - An Extension for Adobe Brackets (EdgeCode)
+PageSuck - An Extension for Adobe Brackets / EdgeCode
 =====================================================
 
 PageSuck is an extension to Adobe Brackets that allows you to pull the contents
