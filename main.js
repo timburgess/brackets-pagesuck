@@ -40,49 +40,7 @@ define(function (require, exports, module) {
     var mainDialog       = require("text!htmlContent/dialog-template.html");
     var toolbar          = require("text!htmlContent/pagesuck-toolbar.html");
     
-    function getTitle(html) {
-        var start = html.indexOf("<title>");
-        if (start === -1) { return "untitled"; }
-        var end = start += 7;
-        var valid = /[A-Za-z0-9 _\-]/;
-        while (valid.test(html[end])) { end++; }
-        return html.substring(start, end).trim();
-    }
     
-    /**
-     * Tries to use page title as filename if it doesn't already exist
-     */
-    function getFilenameSuggestion(html, dir) {
-        var result = new $.Deferred();
-        var baseFileName = getTitle(html);
-        var suggestedName = baseFileName + ".html";
-        var dirEntry = new NativeFileSystem.DirectoryEntry(dir);
-        
-        result.progress(function attemptNewName(suggestedName, nextIndexToUse) {
-            if (nextIndexToUse > 99) {
-                // tried enough
-                result.reject();
-                return;
-            }
-            
-            // check this name
-            var successCallback = function (entry) {
-                // file exists, notify to the next progress
-                result.notify(baseFileName + "-" + nextIndexToUse + ".html", nextIndexToUse + 1);
-            };
-            var errorCallback = function (error) {
-                // file not found - we can use this name
-                result.resolve(suggestedName);
-            };
-            
-            dirEntry.getFile(suggestedName, {}, successCallback, errorCallback);
-        });
-        
-        // kick it off
-        result.notify(baseFileName + ".html", 1);
-        
-        return result.promise();
-    }
     
     /**
      * With html retrieved, creates a new untitled document and
@@ -93,7 +51,7 @@ define(function (require, exports, module) {
         var counter = 1;
         var doc = DocumentManager.createUntitledDocument(counter, ".html");
         DocumentManager.setCurrentDocument(doc);
-        doc.setText(html);
+        doc.setText(html);        
     }
     
             
@@ -110,6 +68,7 @@ define(function (require, exports, module) {
         };
         
         Dialogs.showModalDialogUsingTemplate(Mustache.render(mainDialog, templateVars), false);
+        
         
         // add handlers and focus to input
         var $dlg = $(".pagesuck-dialog.instance");
@@ -134,7 +93,7 @@ define(function (require, exports, module) {
                 }
             });
             // change button text
-            $(this).html($(this)[0].attributes['data-loading-text'].nodeValue)
+            $(this).html($(this)[0].attributes['data-loading-text'].nodeValue);
         });
     }
     
