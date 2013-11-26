@@ -3,12 +3,9 @@
         <h1 class="dialog-title">{{title}}</h1>
     </div>
     <div class="modal-body">
-        <div class="field-container">
-            <label>
-                URL: <input type="text" value="{{baseUrl}}" class="url" />
-            </label>
-            {{#errorMessage}}<div class="alert" style="margin-bottom: 0">{{{errorMessage}}}</div>{{/errorMessage}}
-         </div>
+        <form class="form-horizontal">
+            <label>URL: <input type="text" value="{{baseUrl}}" class="url" /></label>
+        </form>
     </div>
     <div class="modal-footer">
         <button class="dialog-button btn" data-button-id="cancel">{{Strings.CANCEL}}</button>
