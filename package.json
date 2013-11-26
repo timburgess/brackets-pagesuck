@@ -1,9 +1,9 @@
 {
     "name": "timburgess.pagesuck",
     "title": "PageSuck",
-    "description": "Alt-S to pull a URL directly into your editor.",
+    "description": "Suck a URL's contents directly into your editor.",
     "homepage": "https://github.com/timburgess/brackets-pagesuck",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "author": "Tim Burgess (https://github/timburgess)",
     "license": "MIT",
     "engines": {
