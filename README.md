@@ -13,7 +13,7 @@ Raymond Camden blogged (and did a demo screencast) about PageSuck on the [Adobe 
 Kevin Dangoor did a presentation at [Adobe MAX 2013 about Brackets Extensions](http://tv.adobe.com/watch/max-2013/extending-brackets-with-javascript/) using PageSuck as an example.
 
 ###To install###
-<hr>
+
 
 PageSuck is available in the Brackets Extension Registry. Click on the Plugin icon on the right hand side.
 Then click on the list of available extensions and click *Install* to install PageSuck. (To see where the
@@ -25,11 +25,13 @@ inside the ```brackets/src/extensions/user``` folder, and reload Brackets.
 **Compatible with Brackets Sprint 28 or later**
 
 ###Licence###
-<hr>
+
 PageSuck is licenced under the [MIT licence](http://en.wikipedia.org/wiki/MIT_licence).
 
 ###History###
-<hr>
+* 2013-11-27: 1.0.2 Release.
+              Downloaded content now held as an untitled document.
+
 * 2013-08-06: Improved dialog layout. Resolved odd character appearing in Mac dialog input field
 
 * 2013-08-01: Resolved 'Grey Screen of Death' caused by underlying Bootstrap changes in Brackets.
