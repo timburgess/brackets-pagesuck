@@ -30,6 +30,7 @@ define(function (require, exports, module) {
     
     // Brackets modules
     var DocumentManager     = brackets.getModule("document/DocumentManager"),
+        EditorManager       = brackets.getModule("editor/EditorManager"),
         ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
         CommandManager      = brackets.getModule("command/CommandManager"),
         KeyBindingManager   = brackets.getModule("command/KeyBindingManager"),
@@ -50,7 +51,6 @@ define(function (require, exports, module) {
         
         var counter = 1;
         var doc = DocumentManager.createUntitledDocument(counter, ".html");
-        DocumentManager.setCurrentDocument(doc);
         doc.setText(html);        
     }
     
@@ -83,17 +83,50 @@ define(function (require, exports, module) {
             // get input URL and retrieve content
             var baseUrlValue = $urlInput.val();
             console.log("Sucking " + baseUrlValue);
-            $.ajax({
-                url: baseUrlValue,
-                dataType: 'html',
-                success: function (html) {
-                    // load the page then close the dialog
-                    loadPage(html);
-                    Dialogs.cancelModalDialogIfOpen("pagesuck-dialog");
-                }
-            });
+            
+            getPageHtml(baseUrlValue);
+            
             // change button text
             $(this).html($(this)[0].attributes['data-loading-text'].nodeValue);
+        });
+    }
+    
+    // get url from selected text if any, otherwise fallback to dialog
+    function getUrlInput() {
+        var editor = EditorManager.getActiveEditor(),
+            url;
+
+        if (editor) {
+            
+            url = editor.getSelectedText();
+
+            if (url) {
+                getPageHtml(url);
+            }
+            else {
+                showUrlDialog();
+            }
+        }
+    }
+    
+    // add protocol to url if missing and retrieve page
+    function getPageHtml(url) {
+        
+        if (url.substr(0, 7) !== 'http://' && url.substr(0, 8) !== 'https://') {
+            url = 'http://' + url;
+        }
+        
+        $.ajax({
+            url: url,
+            dataType: 'html'
+        })
+        .done(function (html) {
+            // load the page then close the dialog
+            loadPage(html);
+            Dialogs.cancelModalDialogIfOpen("pagesuck-dialog");
+        })
+        .fail(function() {
+            console.error('could not open ' + url);
         });
     }
     
@@ -107,7 +140,7 @@ define(function (require, exports, module) {
     });
     
     // wegister with the wabbit
-    CommandManager.register("PageSuck", COMMAND_ID, showUrlDialog);
+    CommandManager.register("PageSuck", COMMAND_ID, getUrlInput);
     KeyBindingManager.addBinding(COMMAND_ID, "Alt-S", "mac");
     KeyBindingManager.addBinding(COMMAND_ID, "Alt-S", "win");
 });
